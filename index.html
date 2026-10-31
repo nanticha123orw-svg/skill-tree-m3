@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<title>Skill Tree ม.3</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap">
+<style>
+/* Layout: เดินทีละขั้นเหมือนเกม — เลือกสิ่งที่ชอบ เลือกอาชีพ แล้วกิ่งเส้นทางของอาชีพนั้นค่อยแตกออกมา */
+:root{
+  --bg:#EDF0F7; --paper:#FFFFFF; --ink:#15193A; --muted:#555C7D; --line:#C7CDE0; --edge:#C2C8DC; --soft:#E2E6F1;
+  --point:#A85A00; --point-ink:#FFFFFF;
+  --health:#0A7A67; --tech:#BC4D0B; --digital:#2957CF; --biz:#B01E3E; --people:#6A3DC4; --create:#9A1794; --land:#4A7409; --base:#3A4166;
+  --display:"Chakra Petch","IBM Plex Sans Thai",Tahoma,sans-serif;
+  --body:"IBM Plex Sans Thai",Tahoma,"Noto Sans Thai",sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0E1124; --paper:#191D38; --ink:#EEF0FF; --muted:#A9AFD0; --line:#343A60; --edge:#343A5E; --soft:#242948;
+  --point:#F4B648; --point-ink:#1B1400;
+  --health:#45D6B6; --tech:#FF9C60; --digital:#83A9FF; --biz:#FF8A9D; --people:#BBA2FF; --create:#EF8FE9; --land:#AEDB50; --base:#B6BCDD;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E1124; --paper:#191D38; --ink:#EEF0FF; --muted:#A9AFD0; --line:#343A60; --edge:#343A5E; --soft:#242948;
+  --point:#F4B648; --point-ink:#1B1400;
+  --health:#45D6B6; --tech:#FF9C60; --digital:#83A9FF; --biz:#FF8A9D; --people:#BBA2FF; --create:#EF8FE9; --land:#AEDB50; --base:#B6BCDD;
+  color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font:400 16px/1.65 var(--body)}
+button{font:inherit;color:inherit;cursor:pointer}
+a{color:var(--digital)}
+h1,h2,h3{font-family:var(--display);line-height:1.25;text-wrap:balance;margin:0}
+p{margin:0}
+:focus-visible{outline:3px solid var(--point);outline-offset:2px}
+.wrap{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:30px 60px;display:grid;gap:38px}
+h1{font-size:clamp(32px,6vw,50px);font-weight:700}
+h1 span{color:var(--point)}
+.lead{font-size:18px;color:var(--muted);margin-top:6px;max-width:640px}
+.step{display:grid;gap:14px}
+.sh{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;align-items:center}
+.num{width:42px;height:42px;background:var(--point);color:var(--point-ink);font:700 21px var(--display);display:grid;place-items:center;transform:rotate(45deg);border-radius:6px}
+.num span{transform:rotate(-45deg)}
+.sh h2{font-size:clamp(22px,4vw,28px);font-weight:700}
+.note{color:var(--muted);font-size:14px}
+.btn{border:1.5px solid var(--line);background:transparent;border-radius:6px;padding:8px 15px;font-weight:500}
+.btn:hover{border-color:var(--ink)}
+.btn.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.row{display:flex;flex-wrap:wrap;gap:9px;align-items:center}
+
+.likes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.like{background:var(--paper);border:2px solid var(--line);border-radius:10px;padding:13px 15px;text-align:left;display:grid;grid-template-columns:auto minmax(0,1fr);gap:11px;align-items:center;font-weight:500;line-height:1.35}
+.like i{width:18px;height:18px;border:2px solid var(--line);transform:rotate(45deg);border-radius:3px}
+.like:hover{border-color:var(--point)}
+.like[aria-pressed="true"]{border-color:var(--point);background:color-mix(in srgb,var(--point) 13%,var(--paper))}
+.like[aria-pressed="true"] i{background:var(--point);border-color:var(--point)}
+
+.quiz{background:var(--paper);border:2px solid var(--point);border-radius:10px;padding:18px;display:grid;gap:11px}
+.quiz h3{font-size:20px}
+.quiz b.c{font:600 14px var(--display);color:var(--point)}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr));gap:8px}
+.opt{text-align:left;border:1.5px solid var(--line);background:transparent;border-radius:7px;padding:11px 13px}
+.opt:hover{border-color:var(--point)}
+
+.jobs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.job{position:relative;background:var(--paper);border:1.5px solid color-mix(in srgb,var(--c) 45%,var(--line));border-radius:16px 4px 16px 4px;padding:12px 13px;text-align:left;display:grid;align-content:start;gap:1px;line-height:1.3}
+.job b{font:600 16px/1.25 var(--display);color:var(--c)}
+.job small{font-size:13.5px;color:var(--muted)}
+.job em{font:600 12.5px var(--display);color:var(--point);font-style:normal;margin-bottom:2px}
+.job:hover{transform:translateY(-1px);border-color:var(--c)}
+.job.sel{background:var(--c);border-color:var(--c)}
+.job.sel b,.job.sel small,.job.sel em{color:var(--paper)}
+
+.result{background:var(--paper);border:1px solid var(--line);border-top:6px solid var(--c);border-radius:10px;padding:20px;display:grid;gap:18px}
+.result h3{font-size:clamp(27px,5vw,36px);font-weight:700;color:var(--c)}
+.facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.lbl{font:600 14px var(--display);color:var(--muted);margin-bottom:4px}
+.facts ul{margin:0;padding-left:20px}
+.startn{justify-self:center;background:var(--point);color:var(--point-ink);font:700 16px var(--display);padding:6px 20px;border-radius:99px;position:relative}
+.startn::after{content:"";position:absolute;left:50%;top:100%;height:18px;border-left:2px solid var(--line)}
+.branches{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,235px),1fr));gap:14px;margin-top:-4px}
+.branch{border:2px solid var(--line);border-radius:10px;padding:13px;display:grid;gap:0;align-content:start;animation:grow .35s ease-out}
+@keyframes grow{from{opacity:.2;transform:translateY(-8px)}}
+.bname{font:700 17px var(--display);margin-bottom:9px}
+.bwarn{display:block;font:500 13px var(--body);color:var(--point)}
+.node{position:relative;padding:0 0 13px 24px}
+.node::before{content:"";position:absolute;left:6px;top:7px;bottom:-7px;border-left:2px solid var(--c)}
+.node::after{content:"";position:absolute;left:1px;top:6px;width:12px;height:12px;background:var(--c);transform:rotate(45deg);border-radius:2px}
+.node b{font-weight:600;display:block;line-height:1.3}
+.node span{font-size:13.5px;color:var(--muted);display:block;line-height:1.4}
+.node u{text-decoration:none;font:600 12.5px var(--display);color:var(--c)}
+.goal{background:color-mix(in srgb,var(--c) 13%,transparent);border-radius:7px;padding:9px 11px;font-weight:500;line-height:1.35}
+.goal strong{color:var(--c);font-family:var(--display);font-size:20px}
+.bnote{font-size:13.5px;color:var(--muted);margin-top:8px;line-height:1.4}
+.term{border:0;background:none;padding:0;border-bottom:1.5px dashed currentColor;font-weight:500}
+.gloss{background:var(--soft);border-radius:7px;padding:10px 13px;font-size:15px}
+.demand{background:color-mix(in srgb,var(--point) 13%,transparent);padding:9px 12px;border-radius:7px}
+
+.ways{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.way{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:14px;display:grid;gap:6px;align-content:start}
+.way h3{font-size:19px}
+.way p{font-size:15px;line-height:1.5}
+.way .y{font:600 13px var(--display);color:var(--point)}
+.todo{margin:0;padding-left:21px;display:grid;gap:4px}
+
+details.more{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:13px 16px}
+details.more summary{cursor:pointer;font:600 17px var(--display)}
+details.more[open] summary{margin-bottom:11px}
+.treebox{overflow-x:auto;background-image:radial-gradient(var(--soft) 1.2px,transparent 1.3px);background-size:22px 22px;border-radius:6px}
+.tree{position:relative}
+.tree svg{position:absolute;inset:0;pointer-events:none}
+.colh{position:absolute;top:8px;font:600 14px var(--display)}
+.e{fill:none;stroke:var(--edge);stroke-width:1.2}
+.e.on{stroke:var(--c,var(--ink));stroke-width:2.8}
+.n{position:absolute;width:172px;min-height:46px;background:var(--paper);border:1.5px solid var(--line);border-radius:6px;padding:4px 9px;text-align:left;font:600 14px/1.22 var(--display);--c:var(--base)}
+.n.career{border-radius:15px 3px 15px 3px;color:var(--c);border-color:color-mix(in srgb,var(--c) 55%,var(--line))}
+.n.root{width:82px;height:82px;border-radius:50%;background:var(--point);color:var(--point-ink);border:0;text-align:center;font-size:20px}
+.n.on{border-color:var(--c);box-shadow:0 0 0 1.5px var(--c)}
+.dimmed .n:not(.on):not(.root){opacity:.45}
+.src ul{padding-left:19px;columns:2;column-gap:26px;font-size:14px;margin:8px 0}
+.src li{break-inside:avoid;margin-bottom:3px}
+.src p{font-size:14.5px;margin-bottom:8px}
+.src h3{font-size:16px;margin:12px 0 4px}
+
+@media (max-width:820px){
+  .likes{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .jobs{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .ways{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .facts{grid-template-columns:minmax(0,1fr)}
+  .src ul{columns:1}
+}
+@media (max-width:440px){.likes,.ways{grid-template-columns:minmax(0,1fr)}.result{padding:16px}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>จบ ม.3 แล้ว<span>ไปไหนดี?</span></h1>
+    <p class="lead">เล่นเหมือนเกม 3 ขั้น เลือกสิ่งที่ชอบ เลือกอาชีพ แล้วดูว่าต้องเรียนทางไหนถึงจะไปถึง</p>
+  </header>
+
+  <section class="step">
+    <div class="sh"><div class="num"><span>1</span></div><h2>คุณชอบอะไร? กดได้หลายข้อ</h2></div>
+    <div class="likes" id="likes"></div>
+    <div class="row"><button class="btn primary" id="startQuiz" type="button">คิดไม่ออก ช่วยถามให้หน่อย (5 ข้อ)</button><span class="note" id="egTag">ตอนนี้เลือกไว้เป็นตัวอย่าง เปลี่ยนได้เลย</span></div>
+    <div class="quiz" id="quiz" hidden aria-live="polite"></div>
+  </section>
+
+  <section class="step">
+    <div class="sh"><div class="num"><span>2</span></div><h2>อาชีพไหนน่าสนใจ? กดดูได้เลย</h2></div>
+    <div class="jobs" id="jobs"></div>
+    <div class="row">
+      <button class="btn" id="toggleAll" type="button"></button>
+      <button class="btn" id="fastOnly" type="button" aria-pressed="false"></button>
+    </div>
+    <p class="note">"ใช่เลย" หมายถึงตรงกับสิ่งที่คุณเลือก เป็นแค่จุดเริ่มต้น ไม่ได้แปลว่าอาชีพอื่นทำไม่ได้</p>
+  </section>
+
+  <section class="step" id="step3">
+    <div class="sh"><div class="num"><span>3</span></div><h2>ไปถึงอาชีพนี้ได้ยังไง?</h2></div>
+    <div class="result" id="result" aria-live="polite"></div>
+  </section>
+
+  <section class="step">
+    <h2 style="font-size:24px">ทางหลังจบ ม.3 มี 4 แบบ</h2>
+    <div class="ways">
+      <div class="way"><h3>ม.ปลาย</h3><span class="y">ม.4–6 · 3 ปี</span><p>เรียนวิชาการในโรงเรียน เหมาะถ้ายังไม่รู้ว่าอยากเป็นอะไร หรืออยากเข้ามหาวิทยาลัย</p></div>
+      <div class="way"><h3>ปวช.</h3><span class="y">สายอาชีพ · 3 ปี</span><p>เรียนแบบลงมือทำ เช่น ช่าง คอม บัญชี ทำอาหาร เหมาะถ้ารู้แล้วว่าชอบสายไหน จบแล้วเทียบเท่า ม.6</p></div>
+      <div class="way"><h3>ทวิศึกษา</h3><span class="y">ได้ 2 วุฒิ · 3 ปี</span><p>เรียน ม.ปลาย พร้อม ปวช. จบได้ทั้งสองวุฒิ งานเยอะกว่า และไม่ได้มีทุกโรงเรียน</p></div>
+      <div class="way"><h3>กศน.</h3><span class="y">จัดเวลาเองได้มากกว่า</span><p>เรียนนอกโรงเรียนปกติ เหมาะถ้าต้องทำงานหรือดูแลครอบครัว จบแล้วเทียบเท่า ม.6</p></div>
+    </div>
+    <div class="facts" style="margin-top:6px">
+      <div>
+        <div class="lbl">ทำต่อได้เลย</div>
+        <ol class="todo">
+          <li>จดอาชีพที่สนใจ 3 อาชีพ</li>
+          <li>เอาไปคุยกับครูแนะแนวและที่บ้าน</li>
+          <li>ดูว่าโรงเรียนหรือวิทยาลัยใกล้บ้านเปิดสาขาอะไร</li>
+        </ol>
+      </div>
+      <div>
+        <div class="lbl">ถ้ากังวลเรื่องเงิน</div>
+        <p>ไม่ต้องเลิกฝันทันที นักเรียนกู้เรียนจาก กยศ. ได้ถ้าเข้าเกณฑ์ และยังมีทุนจาก กสศ. ลองถามครูแนะแนวดูก่อน</p>
+      </div>
+    </div>
+  </section>
+
+  <details class="more">
+    <summary>ดูต้นไม้ทั้งหมด</summary>
+    <p class="note" style="margin-bottom:8px">รวมทุกเส้นทางไว้ในภาพเดียว เลื่อนซ้ายขวาได้ กดอาชีพเพื่อดูรายละเอียดด้านบน</p>
+    <div class="treebox" tabindex="0" aria-label="ต้นไม้เส้นทางทั้งหมด"><div class="tree" id="tree"></div></div>
+  </details>
+
+  <details class="more src">
+    <summary>สำหรับครูและผู้ปกครอง: วันสำคัญและแหล่งข้อมูล</summary>
+    <h3>นักเรียน ม.3 ปีการศึกษา 2569</h3>
+    <p>ถ้าเรียนต่อตามปกติ จะยื่นเข้ามหาวิทยาลัยราว TCAS73 ปฏิทิน TCAS70 เป็นเพียงตัวอย่าง: รอบ Portfolio เริ่มหลัง 15 ส.ค. 69, TGAT/TPAT 30 ม.ค.–1 ก.พ. 70, A-Level 13–15 มี.ค. 70, Admission 7–13 พ.ค. 70, Direct Admission 29 พ.ค.–15 มิ.ย. 70 ยืนยันที่ mytcas.com</p>
+    <h3>กยศ.</h3>
+    <p>กลุ่มเป้าหมายรวมครอบครัวรายได้ไม่เกิน 360,000 บาทต่อปี ปี 2569 เปิด Pre-Approve ระดับมัธยมและอาชีวะ 16 พ.ค.–13 มิ.ย. ดูปีถัดไปที่ studentloan.or.th</p>
+    <h3>ขอบเขตข้อมูล (รวบรวม 31 ต.ค. 2569)</h3>
+    <p>อายุที่แสดงเป็นการประมาณจากเวลาเรียนปกติ เริ่มนับจากอายุ 15 ปี จำนวนปีเรียน ชื่อใบอนุญาต และชื่อการสอบของบางอาชีพเป็นความรู้ทั่วไปที่ยังไม่ได้ยืนยันกับประกาศรายปี จึงระบุหน่วยงานที่ควรตรวจไว้ หน้านี้ไม่แสดงเงินเดือนเพราะไม่พบตัวเลขปีล่าสุดที่เชื่อถือได้ การจับคู่ความชอบกับอาชีพเป็นเกณฑ์ที่กำหนดขึ้นเอง ไม่ใช่แบบทดสอบมาตรฐานทางจิตวิทยา</p>
+    <ul>
+      <li><a href="https://www.trueplookpanya.com/tcas/article/detail/65005" target="_blank" rel="noopener">TruePlookPanya: ปวช. และ ปวส.</a></li>
+      <li><a href="https://www.trueplookpanya.com/tcas/article/detail/73731" target="_blank" rel="noopener">TruePlookPanya: สายสามัญและสายอาชีพ</a></li>
+      <li><a href="https://www.trueplookpanya.com/tcas/article/detail/74488" target="_blank" rel="noopener">TruePlookPanya: วุฒิ กศน. และ ปวช. กับ TCAS</a></li>
+      <li><a href="https://www.trueplookpanya.com/knowledge/content/94068-edu-" target="_blank" rel="noopener">TruePlookPanya: แผนการเรียน ม.ปลาย</a></li>
+      <li><a href="https://www.thairath.co.th/newspaper/2588310" target="_blank" rel="noopener">ไทยรัฐ: ทวิศึกษา</a></li>
+      <li><a href="https://www.matichon.co.th/local/education/news_3628282" target="_blank" rel="noopener">มติชน: นโยบายทวิศึกษา</a></li>
+      <li><a href="https://www.bangkokbiznews.com/news/news-update/1231277" target="_blank" rel="noopener">กรุงเทพธุรกิจ: ปฏิทิน TCAS70</a></li>
+      <li><a href="https://www.pptvhd36.com/news/%E0%B8%AA%E0%B8%B1%E0%B8%87%E0%B8%84%E0%B8%A1/274111" target="_blank" rel="noopener">PPTV: วันสอบ TCAS70</a></li>
+      <li><a href="https://www.trueplookpanya.com/tcas/article/detail/97424" target="_blank" rel="noopener">TruePlookPanya: เตรียมตัว TCAS70</a></li>
+      <li><a href="https://marketeeronline.co/archives/482333" target="_blank" rel="noopener">Marketeer: ข่าวตลาดงาน 2569</a></li>
+      <li><a href="https://www.thansettakij.com/finance/670892" target="_blank" rel="noopener">ฐานเศรษฐกิจ: ข่าวตลาดแรงงาน 2569</a></li>
+      <li><a href="https://www.dailynews.co.th/news/5856113/" target="_blank" rel="noopener">เดลินิวส์: กยศ. ปี 2569</a></li>
+      <li><a href="https://www.pptvhd36.com/news/%E0%B8%AA%E0%B8%B1%E0%B8%87%E0%B8%84%E0%B8%A1/267006" target="_blank" rel="noopener">PPTV: รับสมัครนักเรียนเตรียมทหาร</a></li>
+      <li><a href="https://www.matichon.co.th/article/news_1257650" target="_blank" rel="noopener">มติชน: การใช้ทุนแพทย์</a></li>
+      <li><a href="https://th.jobsdb.com/th/career-advice/article/จบนิติศาสตร์ทำงานอะไร" target="_blank" rel="noopener">Jobsdb: นิติศาสตร์และอาชีพ</a></li>
+      <li><a href="https://www.rmutp.ac.th/web2561/wp-content/uploads/2023/11/หลักสูตร-ปวช.สถาปัตยกรรมศาสตร์-ศปก2562.pdf" target="_blank" rel="noopener">มทร.พระนคร: ปวช. สถาปัตยกรรม</a></li>
+      <li><a href="https://www.caat.or.th/wp-content/uploads/2021/10/NL-4_1CPL2564.pdf" target="_blank" rel="noopener">CAAT: การสอบ CPL</a></li>
+      <li><a href="https://mytcas.com" target="_blank" rel="noopener">myTCAS เว็บทางการ</a></li>
+    </ul>
+  </details>
+</div>
+
+<script>
+const LIKES=[['num','คิดเลข แก้โจทย์ หาเหตุผล'],['hand','ซ่อมของ ลงมือทำ'],['art','วาดรูป ออกแบบ เล่าเรื่อง'],['care','ช่วยเหลือ ดูแลคนอื่น'],['talk','พูดคุย เจอคนใหม่'],['sys','จัดระเบียบ ทำงานละเอียด']];
+const GL={'ปวช.':'เรียนสายอาชีพหลังจบ ม.3 ใช้เวลา 3 ปี จบแล้วเทียบเท่า ม.6','ปวส.':'เรียนสายอาชีพต่อจาก ปวช. อีก 2 ปี เก่งเฉพาะทางขึ้น','กศน.':'การเรียนนอกโรงเรียนปกติ จบแล้วได้วุฒิเทียบเท่า ม.6','ทวิศึกษา':'เรียน ม.ปลาย พร้อม ปวช. จบได้ทั้งสองวุฒิ','TCAS':'ระบบกลางสำหรับสมัครเข้ามหาวิทยาลัยในไทย','TPAT':'ข้อสอบวัดความถนัดเฉพาะสาขา เช่น แพทย์ วิศวะ ครู','A-Level':'ข้อสอบรายวิชา เช่น คณิต ฟิสิกส์ ภาษาอังกฤษ ใช้สมัครมหาวิทยาลัย','Portfolio':'แฟ้มรวมผลงานของเรา ใช้สมัครเรียนหรือสมัครงาน','เทียบโอน':'นำวิชาที่เรียนจาก ปวส. มานับต่อใน ป.ตรี จึงอาจเรียนสั้นลง','ใบอนุญาต':'บัตรรับรองว่าทำอาชีพนี้ได้ตามกฎหมาย ส่วนใหญ่ต้องเรียนจบและสอบผ่านก่อน','ใช้ทุน':'ทำงานให้รัฐตามเวลาที่ตกลง หลังเรียนจบ'};
+const CL={health:'สุขภาพ',tech:'ช่าง',digital:'ดิจิทัล',biz:'ธุรกิจ',people:'คนและภาษา',create:'สร้างสรรค์',land:'อาหารและเกษตร'};
+const N={
+ s_sci:{col:1,y:3,t:'ม.ปลาย วิทย์-คณิต',d:'เรียนวิทย์และคณิตเข้ม'},
+ s_calc:{col:1,y:3,t:'ม.ปลาย ศิลป์-คำนวณ',d:'เน้นคณิตกับภาษา วิทย์น้อยลง'},
+ s_lang:{col:1,y:3,t:'ม.ปลาย ศิลป์-ภาษา',d:'เรียนภาษา เช่น จีน ญี่ปุ่น ฝรั่งเศส'},
+ s_soc:{col:1,y:3,t:'ม.ปลาย ศิลป์-สังคม',d:'เน้นภาษาไทย สังคม หรือศิลปะ'},
+ s_dual:{col:1,y:3,t:'ทวิศึกษา',d:'เรียน ม.ปลาย พร้อมทักษะอาชีพ'},
+ s_nfe:{col:1,y:3,t:'กศน.',d:'เรียนนอกระบบ ระยะเวลาขึ้นกับหน่วยกิต'},
+ v_ind:{col:1,y:3,t:'ปวช. ช่างอุตสาหกรรม',d:'ฝึกยนต์ ไฟฟ้า เครื่องกล'},
+ v_it:{col:1,y:3,t:'ปวช. ไอที',d:'ฝึกคอมพิวเตอร์และเขียนโปรแกรม'},
+ v_biz:{col:1,y:3,t:'ปวช. ธุรกิจ',d:'เรียนบัญชี การขาย การตลาด'},
+ v_art:{col:1,y:3,t:'ปวช. ศิลปะและออกแบบ',d:'ฝึกวาด กราฟิก มัลติมีเดีย'},
+ v_svc:{col:1,y:3,t:'ปวช. อาหารและท่องเที่ยว',d:'ฝึกทำอาหาร งานโรงแรม ท่องเที่ยว'},
+ v_agri:{col:1,y:3,t:'ปวช. เกษตร',d:'เรียนปลูกพืช เลี้ยงสัตว์ เทคโนโลยีเกษตร'},
+ p_tech:{col:2,y:2,t:'ปวส. ช่าง',d:'ฝึกเทคนิคให้เก่งเฉพาะทาง'},
+ p_it:{col:2,y:2,t:'ปวส. ไอที',d:'เขียนโปรแกรมและดูแลระบบลึกขึ้น'},
+ p_biz:{col:2,y:2,t:'ปวส. ธุรกิจ',d:'บัญชีและการตลาดลึกขึ้น'},
+ p_art:{col:2,y:2,t:'ปวส. ออกแบบ',d:'ทำงานออกแบบและสะสมผลงาน'},
+ p_svc:{col:2,y:2,t:'ปวส. อาหารและบริการ',d:'ฝึกงานครัวหรืองานบริการจริงจัง'},
+ p_agri:{col:2,y:2,t:'ปวส. เกษตร',d:'จัดการฟาร์มและธุรกิจเกษตร'},
+ cadet:{col:2,y:2,t:'โรงเรียนเตรียมทหาร',d:'สอบเข้าหลังเรียนจบ ม.4'},
+ u_med:{col:3,y:6,t:'มหาวิทยาลัย สายแพทย์หรือเภสัช',d:'เรียนยาวและเข้มข้น'},
+ u_health:{col:3,y:4,t:'มหาวิทยาลัย สายสุขภาพ',d:'พยาบาล กายภาพบำบัด ฯลฯ'},
+ u_eng:{col:3,y:4,t:'มหาวิทยาลัย วิศวะ',d:'เลือกสาขา เช่น โยธา ไฟฟ้า'},
+ u_cs:{col:3,y:4,t:'มหาวิทยาลัย คอมและข้อมูล',d:'คอมพิวเตอร์ ไอที สถิติข้อมูล'},
+ u_arch:{col:3,y:5,t:'มหาวิทยาลัย สถาปัตย์',d:'ออกแบบอาคารและพื้นที่'},
+ u_biz:{col:3,y:4,t:'มหาวิทยาลัย บริหารและบัญชี',d:'การเงิน การตลาด บัญชี'},
+ u_law:{col:3,y:4,t:'มหาวิทยาลัย นิติศาสตร์',d:'เรียนกฎหมาย อ่านเยอะ'},
+ u_edu:{col:3,y:4,t:'มหาวิทยาลัย ครุศาสตร์',d:'เรียนวิชาที่จะสอนและฝึกสอน'},
+ u_comm:{col:3,y:4,t:'มหาวิทยาลัย นิเทศและออกแบบ',d:'สื่อ วิดีโอ ออกแบบ'},
+ u_human:{col:3,y:4,t:'มหาวิทยาลัย ภาษาและจิตวิทยา',d:'ภาษา จิตวิทยา การท่องเที่ยว'},
+ u_land:{col:3,y:4,t:'มหาวิทยาลัย เกษตรและอาหาร',d:'เกษตร เทคโนโลยีอาหาร'},
+ u_avi:{col:3,y:2,t:'โรงเรียนการบิน',d:'เรียนทฤษฎีและฝึกบินจริง เวลาขึ้นกับหลักสูตร'},
+ u_cadet:{col:3,y:5,t:'โรงเรียนนายร้อย',d:'เรียนวิชาการพร้อมฝึกวินัย'}
+};
+const r=(l,n,note,cond)=>({l,n,note,cond:!!cond});
+const J=[
+ {id:'doc',cl:'health',t:'หมอ',sub:'รักษาคนป่วย',what:'ตรวจและรักษาคนป่วยในโรงพยาบาลหรือคลินิก',fit:['ชอบวิทย์ เรียนนานได้','ใจเย็นเวลาเจอเรื่องเครียด'],s:[3,2,0,5,3,4],how:'สอบ TPAT และ A-Level การแข่งขันสูงมาก',lic:'ต้องสอบใบอนุญาต และส่วนใหญ่ต้องใช้ทุน 3 ปี',check:'แพทยสภา, กสพท',routes:[r('ทางหลัก',['s_sci','u_med'])]},
+ {id:'pharm',cl:'health',t:'เภสัชกร',sub:'ดูแลเรื่องยา',what:'จ่ายยา อธิบายวิธีใช้ยา ทำงานที่โรงพยาบาลหรือร้านยา',fit:['ชอบเคมี','ละเอียด ไม่ชอบความผิดพลาด'],s:[4,2,0,3,3,5],how:'สมัครผ่าน TCAS ตามเกณฑ์แต่ละคณะ',lic:'ต้องสอบใบอนุญาต',check:'สภาเภสัชกรรม',routes:[r('ทางหลัก',['s_sci','u_med'])]},
+ {id:'nurse',cl:'health',t:'พยาบาล',sub:'ดูแลคนไข้ใกล้ชิด',what:'ดูแลคนไข้ ดูอาการ และทำงานเป็นทีมกับหมอ',fit:['ชอบช่วยคน','ทำงานเป็นกะได้'],s:[2,3,0,5,3,4],how:'สมัครผ่าน TCAS ส่วนใหญ่ต้องจบวิทย์-คณิต',lic:'ต้องสอบใบอนุญาต',check:'สภาการพยาบาล',routes:[r('ทางหลัก',['s_sci','u_health'])]},
+ {id:'pt',cl:'health',t:'นักกายภาพบำบัด',sub:'ฟื้นฟูร่างกาย',what:'ช่วยคนเจ็บ นักกีฬา และผู้สูงอายุให้กลับมาเคลื่อนไหวได้ดี',fit:['สนใจร่างกายและการออกกำลัง','ให้กำลังใจคนเก่ง'],s:[2,3,0,5,3,3],how:'สมัครผ่าน TCAS',lic:'ต้องสอบใบอนุญาต',check:'สภากายภาพบำบัด',routes:[r('ทางหลัก',['s_sci','u_health'])]},
+ {id:'eng',cl:'tech',t:'วิศวกร',sub:'ออกแบบและสร้างของจริง',what:'คำนวณ ออกแบบ และคุมงาน เช่น ตึก ไฟฟ้า เครื่องจักร',fit:['เก่งคณิตและฟิสิกส์','ชอบแก้ปัญหา'],s:[5,4,1,1,2,4],how:'สอบ TPAT และ A-Level ตามคณะ',lic:'บางสาขาต้องมีใบอนุญาต',check:'สภาวิศวกร',demand:'งานก่อสร้างเป็นสายที่รายงาน JobThai ปี 2569 บอกว่ายังขาดคน',routes:[r('เรียนสายสามัญ',['s_sci','u_eng']),r('เริ่มจากสายช่าง',['v_ind','p_tech','u_eng'],'ใช้วิธีเทียบโอน ต้องดูว่าคณะไหนรับ',true)]},
+ {id:'tech',cl:'tech',t:'ช่างเทคนิค',sub:'ดูแลเครื่องจักร',fast:1,what:'ติดตั้งและซ่อมเครื่องจักร ระบบไฟฟ้าในโรงงาน',fit:['ชอบลงมือทำ','ระวังเรื่องความปลอดภัย'],s:[3,5,0,1,1,4],how:'สมัครที่วิทยาลัยเทคนิคโดยตรง ไม่ต้องใช้ TCAS',lic:'บางงานต้องมีใบรับรองฝีมือ',check:'วิทยาลัยใกล้บ้าน',demand:'งานช่างเทคนิคเป็นสายที่รายงาน JobThai ปี 2569 บอกว่ายังขาดคน',routes:[r('สายช่าง',['v_ind','p_tech']),r('เรียนสองวุฒิ',['s_dual','p_tech'],'มีเฉพาะบางโรงเรียน',true)]},
+ {id:'auto',cl:'tech',t:'ช่างยนต์',sub:'ซ่อมรถ รถไฟฟ้า',fast:1,what:'ตรวจและซ่อมรถ เรียนรู้ระบบรถไฟฟ้า อาจเปิดอู่เองได้',fit:['ชอบเครื่องยนต์','ชอบหาสาเหตุว่าเสียตรงไหน'],s:[2,5,0,2,2,3],how:'สมัครที่วิทยาลัยเทคนิคโดยตรง',lic:'มีใบรับรองฝีมือช่วยเพิ่มโอกาส',check:'วิทยาลัยใกล้บ้าน',routes:[r('ทำงานเร็ว',['v_ind']),r('เก่งเฉพาะทางขึ้น',['v_ind','p_tech'])]},
+ {id:'arch',cl:'tech',t:'สถาปนิก',sub:'ออกแบบอาคาร',what:'ออกแบบบ้านและตึกให้สวยและใช้ได้จริง',fit:['ชอบวาดรูปและคิดเรื่องพื้นที่','ทำงานชิ้นใหญ่ได้นาน'],s:[3,3,5,1,2,3],how:'สอบ TPAT และใช้ Portfolio บางคณะ',lic:'ต้องมีใบอนุญาต',check:'สภาสถาปนิก',demand:'ก่อสร้างและสถาปัตย์เป็นสายที่รายงาน JobThai ปี 2569 บอกว่ายังขาดคน',routes:[r('วิทย์-คณิต',['s_sci','u_arch']),r('ศิลป์-คำนวณ',['s_calc','u_arch'],'บางแห่งรับ ต้องดูประกาศ',true),r('เริ่มจาก ปวช.',['v_art','u_arch'],'บางแห่งรับ ต้องดูประกาศ',true)]},
+ {id:'pilot',cl:'tech',t:'นักบิน',sub:'ค่าเรียนสูงมาก',what:'ขับเครื่องบินตามตารางบินและกฎความปลอดภัยเคร่งครัด',fit:['สุขภาพดี ภาษาอังกฤษดี','ใจเย็นเวลาฉุกเฉิน'],s:[4,4,0,1,3,5],how:'สอบเข้าสถาบันการบินหรือโครงการของสายการบิน',lic:'ต้องมีใบอนุญาตนักบินและผ่านตรวจสุขภาพ',check:'กรมการบินพลเรือน, สถาบันการบิน',routes:[r('วิทย์-คณิต',['s_sci','u_avi']),r('ศิลป์-คำนวณ',['s_calc','u_avi'],'บางสถาบันรับ ต้องดูประกาศ',true)]},
+ {id:'prog',cl:'digital',t:'โปรแกรมเมอร์',sub:'สร้างเว็บและแอป',fast:1,what:'เขียนโปรแกรม สร้างเว็บ แอป และระบบต่าง ๆ',fit:['แก้ปัญหานาน ๆ ได้ไม่เบื่อ','ชอบลองของใหม่'],s:[5,2,2,0,1,4],how:'ผลงานจริงสำคัญมาก ถ้าเข้ามหาวิทยาลัยใช้ TCAS',lic:'ไม่ต้องมีใบอนุญาต',check:'คณะหรือวิทยาลัยที่สนใจ',demand:'รายงาน JobThai ปี 2569 บอกว่าสายไอทีเงินเดือนสูงสุด แต่ต้องแข่งกันด้วยฝีมือ',routes:[r('เข้ามหาวิทยาลัย',['s_sci','u_cs']),r('สายไอทีตั้งแต่เริ่ม',['v_it','p_it'],'เริ่มหางานได้ถ้ามีผลงาน'),r('ปวส. แล้วต่อ ป.ตรี',['v_it','p_it','u_cs'],'ใช้วิธีเทียบโอน ต้องดูว่าคณะไหนรับ',true)]},
+ {id:'data',cl:'digital',t:'นักวิเคราะห์ข้อมูล',sub:'หาคำตอบจากตัวเลข',what:'อ่านข้อมูลจำนวนมาก แล้วช่วยบริษัทตัดสินใจ',fit:['ชอบสถิติ ชอบถามว่าทำไม','อธิบายเรื่องยากให้ง่ายได้'],s:[5,1,1,1,3,4],how:'ใช้ A-Level คณิตเป็นหลัก',lic:'ไม่ต้องมีใบอนุญาต',check:'คณะที่สนใจ',routes:[r('วิทย์-คณิต',['s_sci','u_cs']),r('ศิลป์-คำนวณ',['s_calc','u_cs'],'บางสาขารับ ต้องดูประกาศ',true),r('เริ่มจากธุรกิจ',['s_calc','u_biz'],'เรียนทักษะข้อมูลเพิ่ม')]},
+ {id:'ux',cl:'digital',t:'นักออกแบบแอป',sub:'ทำแอปให้ใช้ง่าย',fast:1,what:'ออกแบบหน้าจอแอปและเว็บ แล้วทดสอบกับผู้ใช้จริง',fit:['ช่างสังเกตว่าคนใช้ของยังไง','ชอบทั้งศิลปะและเทคโนโลยี'],s:[2,1,5,2,3,3],how:'ใช้ Portfolio เป็นหลัก',lic:'ไม่ต้องมีใบอนุญาต',check:'คณะหรือวิทยาลัยที่สนใจ',routes:[r('เข้ามหาวิทยาลัย',['s_soc','u_comm']),r('สายอาชีพ',['v_art','p_art'],'เรียนโปรแกรมออกแบบเพิ่มเอง')]},
+ {id:'acc',cl:'biz',t:'นักบัญชี',sub:'ดูแลเงินของบริษัท',fast:1,what:'ทำบัญชีและภาษี ให้รู้ว่าเงินเข้าออกเท่าไร',fit:['ละเอียด ซื่อตรง','ชอบให้ตัวเลขตรงเป๊ะ'],s:[4,0,0,1,1,5],how:'มหาวิทยาลัยใช้ TCAS ส่วน ปวช. สมัครที่วิทยาลัย',lic:'ผู้สอบบัญชีต้องสอบเพิ่ม',check:'สภาวิชาชีพบัญชี',demand:'การเงินเป็นสายที่รายงาน JobThai ปี 2569 บอกว่ายังขาดคน',routes:[r('เข้ามหาวิทยาลัย',['s_calc','u_biz']),r('สายอาชีพ',['v_biz','p_biz'],'เริ่มงานเร็ว ตำแหน่งสูงมักต้องเรียนต่อ'),r('ปวส. แล้วต่อ ป.ตรี',['v_biz','p_biz','u_biz'],'ใช้วิธีเทียบโอน ต้องดูว่าคณะไหนรับ',true)]},
+ {id:'fin',cl:'biz',t:'นักการเงิน',sub:'ธนาคาร การลงทุน',what:'วิเคราะห์เรื่องเงิน เงินกู้ และความเสี่ยง',fit:['สนใจตัวเลขและข่าวเศรษฐกิจ','ซื่อตรงเรื่องเงิน'],s:[5,0,0,2,3,4],how:'ใช้ A-Level คณิตและอังกฤษ ตามคณะ',lic:'บางงานต้องมีใบอนุญาต',check:'คณะที่สนใจ',demand:'การเงินเป็นสายที่รายงาน JobThai ปี 2569 บอกว่ายังขาดคน',routes:[r('ศิลป์-คำนวณ',['s_calc','u_biz']),r('วิทย์-คณิต',['s_sci','u_biz'])]},
+ {id:'sale',cl:'biz',t:'นักขายออนไลน์',sub:'ขายของ ทำการตลาด',fast:1,what:'หาลูกค้า ดูแลร้านออนไลน์ และทำโปรโมชั่น',fit:['ชอบคุยกับคน ไม่กลัวถูกปฏิเสธ','ชอบลองไอเดียใหม่'],s:[2,1,3,3,5,2],how:'หลายงานไม่บังคับปริญญา',lic:'ไม่ต้องมีใบอนุญาต',check:'ประกาศรับสมัครงานจริง',demand:'งานขายเปิดรับมากที่สุดช่วงครึ่งปีแรก 2569 กว่า 1 แสนตำแหน่ง (JobThai)',routes:[r('ทำงานเร็ว',['v_biz']),r('ปวส.',['v_biz','p_biz']),r('เข้ามหาวิทยาลัย',['s_calc','u_biz'])]},
+ {id:'owner',cl:'biz',t:'เจ้าของกิจการ',sub:'เริ่มได้จากทุกทาง',fast:1,what:'ทำธุรกิจของตัวเอง ดูแลทั้งสินค้า ลูกค้า และเงิน',fit:['กล้าลอง รับความเสี่ยงได้','แก้ปัญหาเฉพาะหน้าเก่ง'],s:[3,2,3,2,5,3],how:'ไม่มีข้อสอบ แต่ต้องเรียนรู้เรื่องเงินและลูกค้า',lic:'ขึ้นกับประเภทธุรกิจ',check:'กรมพัฒนาธุรกิจการค้า',routes:[r('ปวช. ธุรกิจ',['v_biz']),r('ทวิศึกษา',['s_dual']),r('กศน. ควบคู่ทำงาน',['s_nfe'])]},
+ {id:'law',cl:'biz',t:'ทนายความ',sub:'ช่วยคนเรื่องกฎหมาย',what:'ให้คำปรึกษา ทำสัญญา และว่าความในศาล',fit:['ชอบอ่าน เขียนดี','ใช้เหตุผลเก่ง'],s:[3,0,1,2,5,5],how:'ใช้ A-Level รับหลายแผนการเรียน',lic:'ว่าความต้องสอบใบอนุญาต อัยการและผู้พิพากษาต้องสอบเพิ่ม',check:'สภาทนายความ',demand:'กฎหมายเป็นสายที่รายงาน JobThai ปี 2569 บอกว่ายังขาดคน',routes:[r('ศิลป์-สังคม',['s_soc','u_law']),r('ศิลป์-คำนวณ',['s_calc','u_law']),r('ศิลป์-ภาษา',['s_lang','u_law']),r('กศน.',['s_nfe','u_law'],'ต้องดูเงื่อนไขคณะ',true)]},
+ {id:'teach',cl:'people',t:'ครู',sub:'สอนและดูแลเด็ก',what:'สอนหนังสือ ดูแลนักเรียน และช่วยเด็กเติบโต',fit:['ชอบอธิบาย ใจเย็น','ดีใจเวลาเห็นคนอื่นทำได้'],s:[2,1,2,5,5,3],how:'สอบ TPAT และ A-Level ตามคณะ',lic:'ต้องมีใบอนุญาตครู',check:'คุรุสภา',routes:[r('ครูวิทย์หรือคณิต',['s_sci','u_edu']),r('ครูสังคมหรือประถม',['s_soc','u_edu']),r('ครูภาษา',['s_lang','u_edu'])]},
+ {id:'psy',cl:'people',t:'นักจิตวิทยา',sub:'เข้าใจใจคน',what:'รับฟังและช่วยคนเรื่องจิตใจ หรือดูแลพนักงานในบริษัท',fit:['ฟังโดยไม่ตัดสิน','อยากรู้ว่าทำไมคนถึงทำแบบนั้น'],s:[3,0,1,5,4,3],how:'ใช้ A-Level รับหลายแผนการเรียน',lic:'สายโรงพยาบาลต้องมีใบอนุญาต',check:'คณะจิตวิทยาที่สนใจ',routes:[r('ศิลป์-สังคม',['s_soc','u_human']),r('วิทย์-คณิต',['s_sci','u_human'])]},
+ {id:'lang',cl:'people',t:'ล่ามและนักแปล',sub:'เชื่อมสองภาษา',what:'แปลเอกสาร สื่อ หรือช่วยให้คนต่างภาษาคุยกันได้',fit:['รักภาษาและวัฒนธรรม','ฟังเร็ว มีสมาธิ'],s:[1,0,3,2,5,4],how:'ใช้ A-Level ภาษาตามคณะ',lic:'ไม่ต้องมีใบอนุญาต ผลสอบภาษาช่วยได้',check:'คณะที่สนใจ',routes:[r('ทางหลัก',['s_lang','u_human'])]},
+ {id:'guide',cl:'people',t:'งานโรงแรม ไกด์',sub:'ดูแลนักท่องเที่ยว',fast:1,what:'ดูแลแขก พาเที่ยว และแก้ปัญหาเฉพาะหน้า',fit:['ชอบเจอคนใหม่และเดินทาง','ยิ้มเก่ง ใจเย็น'],s:[1,2,2,5,5,3],how:'สมัครที่วิทยาลัยหรือคณะที่สนใจ',lic:'ไกด์ต้องมีใบอนุญาต',check:'กรมการท่องเที่ยว',routes:[r('สายอาชีพ',['v_svc','p_svc']),r('ศิลป์-ภาษา',['s_lang','u_human'])]},
+ {id:'officer',cl:'people',t:'ทหาร ตำรวจ',sub:'ระดับนายร้อย',what:'เป็นหัวหน้าทีม ดูแลความปลอดภัยของประเทศและประชาชน',fit:['ร่างกายแข็งแรง ทำงานเป็นทีม','ชอบความมีวินัย'],s:[3,3,0,3,3,5],how:'สอบเข้าเตรียมทหารหลังจบ ม.4 ตามประกาศที่พบ อายุ 16–18 ปี',lic:'เรียนจบแล้วบรรจุตามหลักสูตร',check:'เว็บรับสมัครของแต่ละหน่วย',routes:[r('เรียน ม.4 ก่อน',['s_sci','cadet','u_cadet'],'ประกาศกองทัพบกและตำรวจที่พบรับเฉพาะชาย ดูประกาศปีล่าสุด',true)]},
+ {id:'content',cl:'create',t:'นักทำคอนเทนต์',sub:'วิดีโอ เสียง งานเขียน',fast:1,what:'คิด ถ่าย ตัดต่อ และลงผลงานในสื่อต่าง ๆ',fit:['เล่าเรื่องเก่ง','ทำสม่ำเสมอแม้ยอดยังน้อย'],s:[1,2,5,1,5,2],how:'ใช้ Portfolio หรือ A-Level ตามคณะ',lic:'ไม่ต้องมีใบอนุญาต',check:'คณะหรือวิทยาลัยที่สนใจ',routes:[r('เข้ามหาวิทยาลัย',['s_soc','u_comm']),r('สายอาชีพ',['v_art','p_art'])]},
+ {id:'design',cl:'create',t:'นักออกแบบกราฟิก',sub:'สื่อสารด้วยภาพ',fast:1,what:'ออกแบบโลโก้ โฆษณา และภาพต่าง ๆ',fit:['ตาไวเรื่องสี','แก้งานตามคำติชมได้'],s:[1,2,5,1,2,3],how:'ใช้ Portfolio เป็นหลัก',lic:'ไม่ต้องมีใบอนุญาต',check:'คณะหรือวิทยาลัยที่สนใจ',routes:[r('สายอาชีพ',['v_art','p_art']),r('ปวช. แล้วเข้ามหาวิทยาลัย',['v_art','u_comm'],'ต้องดูเงื่อนไขคณะ',true),r('สายสามัญ',['s_soc','u_comm'])]},
+ {id:'chef',cl:'land',t:'เชฟ',sub:'ฝีมือสำคัญที่สุด',fast:1,what:'ทำอาหาร คิดเมนู คุมครัว และเปิดร้านเองได้',fit:['ชอบทำอาหารแม้เหนื่อย','ทำงานเร็วในเวลาเร่ง'],s:[1,5,4,2,1,3],how:'สมัครที่วิทยาลัยโดยตรง',lic:'มีใบรับรองฝีมือช่วยเพิ่มโอกาส',check:'วิทยาลัยใกล้บ้าน',routes:[r('ทำงานเร็ว',['v_svc']),r('เก่งขึ้นอีกขั้น',['v_svc','p_svc'])]},
+ {id:'agri',cl:'land',t:'เกษตรกรยุคใหม่',sub:'ฟาร์มกับเทคโนโลยี',fast:1,what:'ปลูกพืชเลี้ยงสัตว์ ใช้เทคโนโลยี และขายตรงถึงลูกค้า',fit:['ชอบธรรมชาติและการทดลอง','อยากมีธุรกิจของตัวเอง'],s:[2,5,1,1,2,3],how:'สมัครวิทยาลัยเกษตร หรือ TCAS ถ้าเข้ามหาวิทยาลัย',lic:'ไม่ต้องมีใบอนุญาต',check:'วิทยาลัยเกษตรใกล้บ้าน',routes:[r('สายอาชีพ',['v_agri','p_agri']),r('วิทย์แล้วเรียนเกษตร',['s_sci','u_land'])]}
+];
+const QUIZ=[
+ {q:'วันหยุดชอบทำอะไร',o:[['ซ่อมหรือประกอบของ',['hand']],['วาดรูป ตัดคลิป',['art']],['ไปเจอเพื่อน',['talk','care']],['เล่นเกมวางแผน',['num']]]},
+ {q:'วิชาไหนเรียนแล้วสนุก',o:[['คณิต วิทย์',['num']],['ภาษา สังคม',['talk']],['ศิลปะ ดนตรี',['art']],['การงาน คอมพิวเตอร์',['hand']]]},
+ {q:'ทำงานกลุ่ม คุณมักทำหน้าที่อะไร',o:[['วางแผน เช็กงาน',['sys']],['พูดนำเสนอ',['talk']],['ลงมือทำชิ้นงาน',['hand']],['ดูแลให้ทุกคนโอเค',['care']]]},
+ {q:'เพื่อนมักมาขอให้ช่วยเรื่องอะไร',o:[['การบ้านเลข',['num']],['ฟังเรื่องกลุ้มใจ',['care']],['แต่งรูป ออกแบบ',['art']],['ซ่อมคอม มือถือ',['hand']]]},
+ {q:'งานแบบไหนทำแล้วภูมิใจ',o:[['มีคนขอบคุณที่ช่วย',['care']],['ได้เห็นของที่ตัวเองสร้าง',['art','hand']],['ทุกอย่างเรียบร้อยไม่พลาด',['sys']],['โน้มน้าวคนสำเร็จ',['talk']]]}
+];
+
+const $=id=>document.getElementById(id);
+const jobById=Object.fromEntries(J.map(j=>[j.id,j]));
+let st={likes:['num','sys'],example:true,sel:'prog',all:false,fast:false};
+try{const s=JSON.parse(localStorage.getItem('st-m3-v2')||'null');if(s&&Array.isArray(s.likes)){st.likes=s.likes;st.example=!!s.example;if(jobById[s.sel])st.sel=s.sel}}catch(e){}
+const save=()=>{try{localStorage.setItem('st-m3-v2',JSON.stringify({likes:st.likes,example:st.example,sel:st.sel}))}catch(e){}};
+
+function score(j){
+  if(!st.likes.length)return 0;
+  const b=LIKES.map(l=>st.likes.includes(l[0])?1:0);
+  return b.reduce((a,v,i)=>a+v*j.s[i],0)/(Math.hypot(...b)*Math.hypot(...j.s));
+}
+function ranked(){return J.map((j,i)=>({j,i,c:score(j)})).sort((a,b)=>b.c-a.c||a.i-b.i)}
+function age(rt){
+  let a=15;rt.n.forEach((id,i)=>{a+=(id==='s_sci'&&rt.n[i+1]==='cadet')?1:(N[id].col===3&&N[rt.n[i-1]]&&N[rt.n[i-1]].col===2&&id!=='u_cadet')?2:N[id].y});return a;
+}
+function stepYears(rt,i){
+  const id=rt.n[i];if(id==='s_sci'&&rt.n[i+1]==='cadet')return 'เรียน ม.4 · 1 ปี';
+  if(id==='s_nfe')return 'ประมาณ 3 ปี';
+  if(N[id].col===3&&N[rt.n[i-1]]&&N[rt.n[i-1]].col===2&&id!=='u_cadet')return 'ประมาณ 2 ปี';
+  return (id==='u_avi'?'ประมาณ ':'')+N[id].y+' ปี';
+}
+const gl=t=>t.replace(/ปวช\.|ปวส\.|กศน\.|ทวิศึกษา|TCAS|TPAT|A-Level|Portfolio|เทียบโอน|ใบอนุญาต|ใช้ทุน/g,m=>`<button type="button" class="term" data-t="${m}">${m}</button>`);
+
+function renderLikes(){
+  $('likes').innerHTML=LIKES.map(l=>`<button type="button" class="like" data-l="${l[0]}" aria-pressed="${st.likes.includes(l[0])}"><i></i><span>${l[1]}</span></button>`).join('');
+  $('egTag').hidden=!st.example;
+}
+function renderJobs(){
+  let list=ranked();const top=st.likes.length?list.slice(0,3).map(x=>x.j.id):[];
+  if(st.fast)list=list.filter(x=>x.j.fast);
+  const shown=st.all||st.fast?list:list.slice(0,8);
+  if(!st.all&&!st.fast&&!shown.some(x=>x.j.id===st.sel))shown[shown.length-1]=list.find(x=>x.j.id===st.sel);
+  $('jobs').innerHTML=shown.map(({j})=>`<button type="button" class="job${j.id===st.sel?' sel':''}" data-j="${j.id}" aria-pressed="${j.id===st.sel}" style="--c:var(--${j.cl})">${top.includes(j.id)?'<em>ใช่เลย</em>':''}<b>${j.t}</b><small>${j.sub}</small></button>`).join('');
+  $('toggleAll').textContent=st.all?'ดูน้อยลง':`ดูทุกอาชีพ (${J.length})`;
+  $('toggleAll').hidden=st.fast;
+  $('fastOnly').textContent=st.fast?'แสดงทุกแบบ':'อยากเริ่มทำงานเร็ว อายุราว 18–20';
+  $('fastOnly').setAttribute('aria-pressed',st.fast);
+}
+function renderResult(){
+  const j=jobById[st.sel];const box=$('result');box.style.setProperty('--c',`var(--${j.cl})`);
+  box.innerHTML=`<div><h3>${j.t}</h3><p style="margin-top:4px;font-size:17px">${j.what}</p></div>
+  <div class="facts" style="grid-template-columns:minmax(0,1fr)"><div><div class="lbl">เหมาะกับคนแบบนี้</div><ul>${j.fit.map(x=>`<li>${x}</li>`).join('')}</ul></div></div>
+  <div class="startn">เริ่มที่ ม.3 · อายุ 15</div>
+  <div class="branches">${j.routes.map(rt=>`<div class="branch"><div class="bname">${rt.l}${rt.cond?'<span class="bwarn">ทางนี้ต้องเช็กเงื่อนไขก่อน</span>':''}</div>
+    ${rt.n.map((id,i)=>`<div class="node"><b>${N[id].t}</b><span>${gl(N[id].d)}</span><u>${stepYears(rt,i)}</u></div>`).join('')}
+    <div class="goal">เริ่มงานได้ตอนอายุราว <strong>${age(rt)}</strong></div>
+    ${rt.note?`<div class="bnote">${gl(rt.note)}</div>`:''}</div>`).join('')}</div>
+  <p class="gloss" id="gloss">เจอคำที่มีขีดเส้นประ กดเพื่อดูความหมายได้</p>
+  ${j.demand?`<p class="demand"><b>ตลาดงาน:</b> ${j.demand}</p>`:''}
+  <div class="facts">
+    <div><div class="lbl">ต้องสอบอะไร</div>${gl(j.how)}</div>
+    <div><div class="lbl">ต้องมีใบอนุญาตไหม</div>${gl(j.lic)}</div>
+  </div>
+  <p class="note">เงื่อนไขเปลี่ยนได้ทุกปี เช็กล่าสุดที่ ${j.check} หรือถามครูแนะแนว</p>`;
+}
+function paintTree(){
+  const j=jobById[st.sel];const on=new Set(),en=new Set();
+  j.routes.forEach(rt=>{const s=['root',...rt.n,j.id];s.forEach(x=>on.add(x));for(let i=0;i<s.length-1;i++)en.add(s[i]+'>'+s[i+1])});
+  Object.entries(nodeEls).forEach(([id,el])=>el.classList.toggle('on',on.has(id)));
+  Object.entries(edgeEls).forEach(([k,p])=>{p.setAttribute('class','e'+(en.has(k)?' on':''));p.style.setProperty('--c',`var(--${j.cl})`);if(en.has(k))p.parentNode.appendChild(p)});
+}
+function render(){renderLikes();renderJobs();renderResult();paintTree();save()}
+function pick(id,scroll){
+  st.sel=id;renderJobs();renderResult();paintTree();save();
+  if(scroll)$('step3').scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth'});
+}
+$('likes').addEventListener('click',e=>{
+  const b=e.target.closest('.like');if(!b)return;const k=b.dataset.l;
+  st.likes=st.likes.includes(k)?st.likes.filter(x=>x!==k):[...st.likes,k];st.example=false;
+  const list=ranked();if(st.likes.length)st.sel=list[0].j.id;
+  render();$('likes').querySelector(`[data-l="${k}"]`).focus();
+});
+$('jobs').addEventListener('click',e=>{const b=e.target.closest('.job');if(b)pick(b.dataset.j,true)});
+$('toggleAll').addEventListener('click',()=>{st.all=!st.all;renderJobs()});
+$('fastOnly').addEventListener('click',()=>{st.fast=!st.fast;renderJobs()});
+$('result').addEventListener('click',e=>{const t=e.target.closest('.term');if(t){const g=$('gloss');g.innerHTML=`<b>${t.dataset.t}</b> คือ ${GL[t.dataset.t]}`}});
+
+let qi=0,qs={};
+function drawQuiz(){
+  const z=$('quiz');
+  if(qi>=QUIZ.length){
+    const sorted=Object.entries(qs).sort((a,b)=>b[1]-a[1]).slice(0,2).map(x=>x[0]);
+    st.likes=sorted;st.example=false;st.sel=ranked()[0].j.id;render();
+    z.innerHTML=`<h3>เลือกให้แล้ว ลองดูอาชีพ "${jobById[st.sel].t}" ก่อนได้เลย</h3><p>นี่เป็นแค่จุดเริ่มต้น กดเปลี่ยนสิ่งที่ชอบเองได้ตลอด</p><div class="row"><button type="button" class="btn primary" id="qGo">ดูเส้นทาง</button></div>`;
+    $('qGo').onclick=()=>{z.hidden=true;pick(st.sel,true)};return;
+  }
+  const q=QUIZ[qi];
+  z.innerHTML=`<b class="c">ข้อ ${qi+1} จาก ${QUIZ.length}</b><h3>${q.q}</h3><div class="opts">${q.o.map((o,i)=>`<button type="button" class="opt" data-o="${i}">${o[0]}</button>`).join('')}</div>`;
+  z.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{q.o[+b.dataset.o][1].forEach(k=>qs[k]=(qs[k]||0)+1);qi++;drawQuiz()});
+}
+$('startQuiz').addEventListener('click',()=>{qi=0;qs={};$('quiz').hidden=false;drawQuiz()});
+
+/* ต้นไม้รวม */
+const NW=172,NH=46,COLX=[10,122,330,538,746],TOP=42,GAP=58;
+const edges=new Map();
+J.forEach(j=>j.routes.forEach(rt=>{const s=['root',...rt.n,j.id];for(let i=0;i<s.length-1;i++)edges.set(s[i]+'>'+s[i+1],{a:s[i],b:s[i+1]})}));
+const pos={};let yy=TOP,last=null;
+J.forEach(j=>{if(last&&last!==j.cl)yy+=14;pos[j.id]={x:COLX[4],y:yy};yy+=GAP;last=j.cl});
+const H=yy+8;
+[3,2].forEach(col=>{
+  const w=Object.keys(N).filter(k=>N[k].col===col).map(id=>{const ys=[...edges.values()].filter(e=>e.a===id&&pos[e.b]).map(e=>pos[e.b].y);return{id,y:ys.reduce((a,b)=>a+b,0)/ys.length}}).sort((a,b)=>a.y-b.y);
+  for(let i=1;i<w.length;i++)if(w[i].y<w[i-1].y+GAP)w[i].y=w[i-1].y+GAP;
+  w.forEach(x=>pos[x.id]={x:COLX[col],y:x.y});
+});
+{const w=Object.keys(N).filter(k=>N[k].col===1).map(id=>{const ys=[...edges.values()].filter(e=>e.a===id&&pos[e.b]).map(e=>pos[e.b].y);return{id,y:ys.reduce((a,b)=>a+b,0)/ys.length}}).sort((a,b)=>a.y-b.y);
+ const step=(H-TOP-NH-16)/(w.length-1);w.forEach((x,i)=>pos[x.id]={x:COLX[1],y:TOP+i*step});pos.root={x:COLX[0],y:TOP}}
+const tree=$('tree');const WIDTH=COLX[4]+NW+10;tree.style.width=WIDTH+'px';tree.style.height=H+'px';tree.className='tree dimmed';
+tree.innerHTML=[[COLX[1],'3 ปีแรก'],[COLX[2],'เรียนต่อเฉพาะทาง'],[COLX[3],'มหาวิทยาลัย'],[COLX[4],'อาชีพ']].map(c=>`<div class="colh" style="left:${c[0]}px">${c[1]}</div>`).join('');
+const NS='http://www.w3.org/2000/svg';const svg=document.createElementNS(NS,'svg');svg.setAttribute('width',WIDTH);svg.setAttribute('height',H);svg.setAttribute('aria-hidden','true');tree.appendChild(svg);
+const edgeEls={},nodeEls={};
+edges.forEach((e,k)=>{const aw=e.a==='root'?82:NW,ah=e.a==='root'?82:NH,x1=pos[e.a].x+aw,y1=pos[e.a].y+ah/2,x2=pos[e.b].x,y2=pos[e.b].y+NH/2,m=Math.max(18,(x2-x1)*.5);
+  const p=document.createElementNS(NS,'path');p.setAttribute('d',`M${x1} ${y1}C${x1+m} ${y1},${x2-m} ${y2},${x2} ${y2}`);p.setAttribute('class','e');svg.appendChild(p);edgeEls[k]=p});
+function addN(id,cls,t,c){const b=document.createElement('button');b.type='button';b.className='n '+cls;b.style.left=pos[id].x+'px';b.style.top=pos[id].y+'px';if(c)b.style.setProperty('--c',c);b.textContent=t;tree.appendChild(b);nodeEls[id]=b;return b}
+addN('root','root','ม.3','var(--point)');
+Object.entries(N).forEach(([id,n])=>addN(id,'',n.t,`var(--${id[0]==='s'&&!['s_dual','s_nfe'].includes(id)?'digital':id[0]==='u'?'digital':id==='cadet'||id==='s_dual'||id==='s_nfe'?'people':'tech'})`).addEventListener('click',()=>{const f=J.find(j=>j.routes.some(rt=>rt.n.includes(id)));if(f)pick(f.id,true)}));
+J.forEach(j=>addN(j.id,'career',j.t,`var(--${j.cl})`).addEventListener('click',()=>pick(j.id,true)));
+render();
+</script>
+</body>
+</html>
